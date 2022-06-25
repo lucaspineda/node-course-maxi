@@ -2,7 +2,9 @@ const http = require('http')
 
 function rqListener(req, res) {
   console.log(req.url, req.method, req.headers)
-  process.exit(); 
+  res.setHeader('Content-Type', 'text/html')
+  res.write('<html>heello</html>')
+  res.end(); 
 }
 
 const server = http.createServer(rqListener);
