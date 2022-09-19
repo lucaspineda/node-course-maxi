@@ -4,11 +4,18 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const session = require("express-session")
+const MongoDBStore = require("connect-mongodb-session")(session)
+
 
 const errorController = require('./controllers/error');
 const User = require('./models/user');
 
+const MONGODB_URI = 'mongodb+srv://lucas:lucas7796@clusterlucas.fbomq.azure.mongodb.net/ClusterLucas'
 const app = express();
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: 'session'
+})
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -19,7 +26,13 @@ const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({secret: 'my secret', resave: false, saveUninitialized: false}))
+app.use(
+  session({
+    secret: 'my secret',
+    resave: false,
+    saveUninitialized: false,
+    store
+  }))
 
 app.use((req, res, next) => {
   User.findById('5bab316ce0a7c75f783cb8a8')
@@ -43,7 +56,7 @@ console.log('foiiiii')
 
 mongoose
   .connect(
-    'mongodb+srv://lucas:lucas7796@clusterlucas.fbomq.azure.mongodb.net/ClusterLucas?retryWrites=true&w=majority'
+    MONGODB_URI
   )
   .then(result => {
     User.findOne().then(user => {
