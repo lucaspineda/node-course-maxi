@@ -19,9 +19,8 @@ exports.postAddProduct = (req, res, next) => {
     price: price,
     description: description,
     imageUrl: imageUrl,
-    userId: req.session.user
+    userId: req.user
   });
-  console.log(req.session.user, '234234')
   product
     .save()
     .then(result => {
@@ -30,7 +29,7 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch(err => {
-      console.log(err , '1');
+      console.log(err);
     });
 };
 
